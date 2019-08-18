@@ -1,5 +1,6 @@
 import React from "react";
 import Field from './Field';
+import {steps} from '../data/steps';
 
 export default class App extends React.Component {
   constructor() {
@@ -52,76 +53,92 @@ export default class App extends React.Component {
     return (
       <div className="form-container card">
         <form className="form card-body">
-          {this.state.stepNumber === 1 && <>
-          <Field
-              id="firstName"
-              label="First name"
-              type="text"
-              name="firstName"
-              value={this.state.firstName}
-              placeholder="Enter first name"
-              onChange={this.onChange}
-              error={this.state.errors.firstName}
-          />
-          <Field
-              id="lastName"
-              label="Last name"
-              type="text"
-              name="lastName"
-              value={this.state.lastName}
-              placeholder="Enter last name"
-              onChange={this.onChange}
-              error={this.state.errors.lastName}
-          />
-          <Field
-              id="password"
-              label="Password"
-              type="password"
-              name="password"
-              value={this.state.password}
-              placeholder="Enter password"
-              onChange={this.onChange}
-              error={this.state.errors.password}
-          />
-          <Field
-              id="repeatPassword"
-              label="Repeat password"
-              type="password"
-              name="repeatPassword"
-              value={this.state.repeatPassword}
-              placeholder="Repeat password"
-              onChange={this.onChange}
-              error={this.state.errors.repeatPassword}
-          />
-          <div className="form-group">
-            <div>Gender</div>
-            <div className="form-check">
-              <input
-                  className="form-check-input"
-                  type="radio"
-                  name="gender"
-                  id="male"
-                  value="Male"
-                  onChange={this.onChange}
-                  checked={this.state.gender === 'Male'}
-              />
-                <label className="form-check-label" htmlFor="male">Male</label>
-            </div>
-            <div className="form-check">
-              <input
-                  className="form-check-input"
-                  type="radio"
-                  name="gender"
-                  id="female"
-                  value="Female"
-                  onChange={this.onChange}
-                  checked={this.state.gender === 'Female'}
-              />
-              <label className="form-check-label" htmlFor="female">Female</label>
-            </div>
+          <div className="steps d-flex justify-content-between">
+            {steps.map(item => (
+                <div
+                    key={item.id}
+                    className={'steps-item' + (this.state.stepNumber === item.id ? ' active' : '') + (this.state.stepNumber > item.id ? ' complete' : '')}
+                    onClick={() =>
+                      this.state.stepNumber > item.id ?
+                      this.setState({stepNumber: item.id}) : ''}
+                >
+                  <span>{item.id}</span>
+                  <p>{item.name}</p>
+                </div>
+            ))}
           </div>
+          {this.state.stepNumber === 1 && <>
+            <Field
+                id="firstName"
+                label="First name"
+                type="text"
+                name="firstName"
+                value={this.state.firstName}
+                placeholder="Enter first name"
+                onChange={this.onChange}
+                error={this.state.errors.firstName}
+            />
+            <Field
+                id="lastName"
+                label="Last name"
+                type="text"
+                name="lastName"
+                value={this.state.lastName}
+                placeholder="Enter last name"
+                onChange={this.onChange}
+                error={this.state.errors.lastName}
+            />
+            <Field
+                id="password"
+                label="Password"
+                type="password"
+                name="password"
+                value={this.state.password}
+                placeholder="Enter password"
+                onChange={this.onChange}
+                error={this.state.errors.password}
+            />
+            <Field
+                id="repeatPassword"
+                label="Repeat password"
+                type="password"
+                name="repeatPassword"
+                value={this.state.repeatPassword}
+                placeholder="Repeat password"
+                onChange={this.onChange}
+                error={this.state.errors.repeatPassword}
+            />
+            <div className="form-group">
+              <div>Gender</div>
+              <div className="form-check">
+                <input
+                    className="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="male"
+                    value="Male"
+                    onChange={this.onChange}
+                    checked={this.state.gender === 'Male'}
+                />
+                <label className="form-check-label" htmlFor="male">Male</label>
+              </div>
+              <div className="form-check">
+                <input
+                    className="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="female"
+                    value="Female"
+                    onChange={this.onChange}
+                    checked={this.state.gender === 'Female'}
+                />
+                <label className="form-check-label" htmlFor="female">Female</label>
+              </div>
+            </div>
           </>}
-          {this.state.stepNumber === 2 && <div>Step 2</div>}
+          {this.state.stepNumber === 2 && <>
+            <div>Step 2</div>
+          </>}
           {this.state.stepNumber === 3 && <div>Step 3</div>}
           {this.state.stepNumber < 4 &&
           <div className='d-flex justify-content-center'>

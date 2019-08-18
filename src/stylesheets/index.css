@@ -13,3 +13,17 @@ body {
 .invalid-feedback {
   display: block; 
 }
+
+.steps-item {
+  color: lightgray;
+  cursor: default;
+}
+
+.steps-item.active {
+  color: green;
+}
+
+.steps-item.complete {
+  color: black;
+  cursor: pointer;
+}
