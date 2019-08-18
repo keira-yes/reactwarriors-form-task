@@ -1,4 +1,4 @@
-export default {
+export const cities = {
   "1": { country: 1, name: "Kyiv" },
   "2": { country: 1, name: "Lviv" },
   "3": { country: 1, name: "Odessa" },
