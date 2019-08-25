@@ -3,6 +3,7 @@ import Field from './Field';
 import {steps} from '../data/steps';
 import countries from '../data/countries';
 import cities from '../data/cities';
+import Step1 from './Step1';
 
 export default class App extends React.Component {
     constructor() {
@@ -132,75 +133,19 @@ export default class App extends React.Component {
                             </div>
                         ))}
                     </div>
-                    {this.state.stepNumber === 1 && <>
-                        <Field
-                            id="firstName"
-                            label="First name"
-                            type="text"
-                            name="firstName"
-                            value={this.state.firstName}
-                            placeholder="Enter first name"
-                            onChange={this.onChange}
-                            error={this.state.errors.firstName}
-                        />
-                        <Field
-                            id="lastName"
-                            label="Last name"
-                            type="text"
-                            name="lastName"
-                            value={this.state.lastName}
-                            placeholder="Enter last name"
-                            onChange={this.onChange}
-                            error={this.state.errors.lastName}
-                        />
-                        <Field
-                            id="password"
-                            label="Password"
-                            type="password"
-                            name="password"
-                            value={this.state.password}
-                            placeholder="Enter password"
-                            onChange={this.onChange}
-                            error={this.state.errors.password}
-                        />
-                        <Field
-                            id="repeatPassword"
-                            label="Repeat password"
-                            type="password"
-                            name="repeatPassword"
-                            value={this.state.repeatPassword}
-                            placeholder="Repeat password"
-                            onChange={this.onChange}
-                            error={this.state.errors.repeatPassword}
-                        />
-                        <div className="form-group">
-                            <div>Gender</div>
-                            <div className="form-check">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="gender"
-                                    id="male"
-                                    value="Male"
-                                    onChange={this.onChange}
-                                    checked={this.state.gender === 'Male'}
-                                />
-                                <label className="form-check-label" htmlFor="male">Male</label>
-                            </div>
-                            <div className="form-check">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    name="gender"
-                                    id="female"
-                                    value="Female"
-                                    onChange={this.onChange}
-                                    checked={this.state.gender === 'Female'}
-                                />
-                                <label className="form-check-label" htmlFor="female">Female</label>
-                            </div>
-                        </div>
-                    </>}
+                    {this.state.stepNumber === 1 &&
+                    <Step1
+                       firstname={this.state.firstName}
+                       lastName={this.state.lastName}
+                       password={this.state.password}
+                       repeatPassword={this.state.repeatPassword}
+                       gender={this.state.gender}
+                       onChange={this.onChange}
+                       errorsFirstName={this.state.errors.firstName}
+                       errorsLastName={this.state.errors.lastName}
+                       errorsPassword={this.state.errors.password}
+                       errorsRepeatPassword={this.state.errors.repeatPassword}
+                    />}
                     {this.state.stepNumber === 2 && <>
                         <Field
                             id="email"
