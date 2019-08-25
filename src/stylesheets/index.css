@@ -15,17 +15,48 @@ body {
 }
 
 .steps-item {
-  color: lightgray;
+  position: relative;
+  width: 25%;
+  text-align: center;
+  color: #333;
+  font-weight: 600;
   cursor: default;
 }
 
-.steps-item.active {
-  color: green;
+.steps-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 17px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: #b5b5b5;
+  z-index: -1;
 }
 
-.steps-item.complete {
-  color: black;
-  cursor: pointer;
+.steps-item span {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 35px;
+  height: 35px;
+  border: 4px solid transparent;
+  border-radius: 50%;
+  background-color: #b5b5b5;
+  color: #fff;
+}
+
+.steps-item.active span {
+  border-color: #f26120;
+  background-color: #19ddfe;
+}
+
+.steps-item.complete::after {
+  background-color: #f26120;
+}
+
+.steps-item.complete span {
+  background-color: #f26120;
 }
 
 .avatar {

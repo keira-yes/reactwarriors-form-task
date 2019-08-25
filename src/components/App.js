@@ -16,9 +16,7 @@ export default class App extends React.Component {
             gender: 'Male',
             email: '',
             mobile: '',
-            countryId: '',
-            countryName: '',
-            cities: [],
+            countryId: 1,
             city: '',
             avatar: '',
             errors: {},
@@ -83,30 +81,26 @@ export default class App extends React.Component {
 
     getCountries = (countries) => {
         return countries.map(item => {
-            return <option key={item.id} id={item.id} value={item.id}>{item.name}</option>
+            return <option key={item.id} value={item.id}>{item.name}</option>
         });
     };
 
     onChangeCountry = (e) => {
         const id = e.target.value;
-        this.setState(() => ({
-                countryId: id
-            }),
-            () => {this.getCities(cities)}
-        )
+        this.setState({
+            countryId: id,
+            city: ''
+        })
     };
 
     getCities = (cities) => {
-        const newCities=[];
+        const newCities = [];
         for (let key in cities) {
             if(cities[key].country === Number(this.state.countryId)) {
-                newCities.push({
-                    id: key,
-                    name: cities[key].name
-                });
+                newCities.push(<option key={key} value={cities[key].name}>{cities[key].name}</option>)
             }
         }
-        this.setState({cities: newCities});
+        return newCities.map(item => {return item})
     };
 
     onChangeFile = (e) => {
@@ -242,7 +236,7 @@ export default class App extends React.Component {
                             </select>
                             {this.state.errors.countryId ? <div className="invalid-feedback">{this.state.errors.countryId}</div> : null}
                         </div>
-                        {this.state.countryId && <div className="form-group">
+                        <div className="form-group">
                             <label htmlFor="country">City</label>
                             <select
                                 id="city"
@@ -252,12 +246,10 @@ export default class App extends React.Component {
                                 onChange={this.onChange}
                             >
                                 <option value="">Select city</option>
-                                {this.state.cities.map(item => {
-                                    return <option key={item.id} value={item.name}>{item.name}</option>
-                                })}
+                                {this.getCities(cities)}
                             </select>
                             {this.state.errors.city ? <div className="invalid-feedback">{this.state.errors.city}</div> : null}
-                        </div>}
+                        </div>
                     </>}
                     {this.state.stepNumber === 3 &&
                         <div className="form-group">
@@ -304,7 +296,12 @@ export default class App extends React.Component {
                                 <div className="col-12">
                                     <p><strong>Email: </strong>{this.state.email}</p>
                                     <p><strong>Mobile: </strong>{this.state.mobile}</p>
-                                    <p><strong>Location: </strong>{this.state.countryId}, {this.state.city}</p>
+                                    <p><strong>Location: </strong>
+                                        {countries.map(item => {
+                                            return (item.id === Number(this.state.countryId) ? item.name : '')
+                                        })},
+                                        {this.state.city}
+                                    </p>
                                     <div className="d-flex justify-content-center">
                                         <button
                                             type="button"
