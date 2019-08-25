@@ -4,6 +4,8 @@ import countries from '../data/countries';
 import cities from "../data/cities";
 import Step1 from './Step1';
 import Step2 from './Step2';
+import Step3 from './Step3';
+import Step4 from './Step4';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -135,16 +137,16 @@ export default class App extends React.Component {
                     </div>
                     {this.state.stepNumber === 1 &&
                     <Step1
-                       firstname={this.state.firstName}
-                       lastName={this.state.lastName}
-                       password={this.state.password}
-                       repeatPassword={this.state.repeatPassword}
-                       gender={this.state.gender}
-                       onChange={this.onChange}
-                       errorsFirstName={this.state.errors.firstName}
-                       errorsLastName={this.state.errors.lastName}
-                       errorsPassword={this.state.errors.password}
-                       errorsRepeatPassword={this.state.errors.repeatPassword}
+                        firstname={this.state.firstName}
+                        lastName={this.state.lastName}
+                        password={this.state.password}
+                        repeatPassword={this.state.repeatPassword}
+                        gender={this.state.gender}
+                        onChange={this.onChange}
+                        errorsFirstName={this.state.errors.firstName}
+                        errorsLastName={this.state.errors.lastName}
+                        errorsPassword={this.state.errors.password}
+                        errorsRepeatPassword={this.state.errors.repeatPassword}
                     />}
                     {this.state.stepNumber === 2 &&
                     <Step2
@@ -163,21 +165,11 @@ export default class App extends React.Component {
                     />
                     }
                     {this.state.stepNumber === 3 &&
-                        <div className="form-group">
-                            <img
-                                className="avatar"
-                                src={this.state.avatar ? this.state.avatar : 'https://vyshnevyi-partners.com/wp-content/uploads/2016/12/no-avatar-300x300.png'}
-                                alt="Avatar"/>
-                            <label htmlFor="avatar">Onload your photo</label>
-                            <input
-                                type="file"
-                                className="form-control-file"
-                                id="avatar"
-                                name='avatar'
-                                onChange={this.onChangeFile}
-                            />
-                            {this.state.errors.avatar ? <div className="invalid-feedback">{this.state.errors.avatar}</div> : null}
-                        </div>
+                    <Step3
+                        avatar={this.state.avatar}
+                        onChangeFile={this.onChangeFile}
+                        errorsAvatar={this.state.errors.avatar}
+                    />
                     }
                     {this.state.stepNumber < 4 &&
                     <div className='d-flex justify-content-center'>
@@ -196,34 +188,16 @@ export default class App extends React.Component {
                         </button>
                     </div>}
                     {this.state.stepNumber === 4 &&
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-4">
-                                    <img className="avatar" src={this.state.avatar} alt="Avatar"/>
-                                </div>
-                                <div className="col-8 d-flex align-items-center"><h3>{this.state.firstName} {this.state.lastName}</h3></div>
-                            </div>
-                            <div className="row">
-                                <div className="col-12">
-                                    <p><strong>Email: </strong>{this.state.email}</p>
-                                    <p><strong>Mobile: </strong>{this.state.mobile}</p>
-                                    <p><strong>Location: </strong>
-                                        {countries.map(item => {
-                                            return (item.id === Number(this.state.countryId) ? item.name : '')
-                                        })},
-                                        {this.state.city}
-                                    </p>
-                                    <div className="d-flex justify-content-center">
-                                        <button
-                                            type="button"
-                                            className="btn btn-outline-secondary col-4"
-                                            onClick={this.onReset}
-                                        >Reset
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <Step4
+                        avatar={this.state.avatar}
+                        firstName={this.state.firstName}
+                        lastName={this.state.lastName}
+                        email={this.state.email}
+                        mobile={this.state.mobile}
+                        countryId={this.state.countryId}
+                        city={this.state.city}
+                        onReset={this.onReset}
+                    />
                     }
                 </form>
             </div>
