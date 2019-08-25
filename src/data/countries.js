@@ -1,4 +1,4 @@
-export const countries = [
+export default [
   {
     id: 1,
     name: "Ukraine"

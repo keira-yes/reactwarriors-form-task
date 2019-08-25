@@ -1,8 +1,8 @@
 import React from "react";
 import Field from './Field';
 import {steps} from '../data/steps';
-import {countries} from '../data/countries';
-import {cities} from '../data/cities';
+import countries from '../data/countries';
+import cities from '../data/cities';
 
 export default class App extends React.Component {
     constructor() {
@@ -16,10 +16,13 @@ export default class App extends React.Component {
             gender: 'Male',
             email: '',
             mobile: '',
-            country: '',
+            countryId: '',
+            countryName: '',
+            cities: [],
             city: '',
+            avatar: '',
             errors: {},
-            stepNumber: 2
+            stepNumber: 1
         }
     }
 
@@ -27,10 +30,22 @@ export default class App extends React.Component {
         e.preventDefault();
         const errors = {};
 
-        if (this.state.firstName.length < 5)errors.firstName = "Must be 5 characters or more";
-        if(this.state.lastName.length < 5) errors.lastName = "Must be 5 characters or more";
-        if(this.state.password.length < 6) errors.password = "Must be 6 characters or more";
-        if(this.state.repeatPassword !== this.state.password) errors.repeatPassword = "Must be equal password";
+        if(this.state.stepNumber === 1) {
+            if (this.state.firstName.length < 5) errors.firstName = "Must be 5 characters or more";
+            if(this.state.lastName.length < 5) errors.lastName = "Must be 5 characters or more";
+            if(this.state.password.length < 6) errors.password = "Must be 6 characters or more";
+            if(this.state.repeatPassword !== this.state.password) errors.repeatPassword = "Must be equal password";
+        }
+        if(this.state.stepNumber === 2) {
+            if (!this.state.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) errors.email = "Invalid email address";
+            if (!this.state.mobile.match(/^\+(?:[0-9-] ?){6,14}[0-9]$/)) errors.mobile = "Your number doesn't match +3801111111";
+            if (!this.state.countryId) errors.countryId = "This field is required";
+            if (this.state.countryId && this.state.city.length < 1) errors.city = "This field is required";
+        }
+
+        if(this.state.stepNumber === 3) {
+            if (!this.state.avatar) errors.avatar = "This field is required";
+        }
 
         if (Object.keys(errors).length > 0) {
             this.setState({errors});
@@ -49,20 +64,60 @@ export default class App extends React.Component {
         });
     };
 
+    onReset = () => {
+        Object.keys(this.state).map(item => {
+            return this.setState({[item]: ''})
+        });
+
+        this.setState({
+            gender: 'Male',
+            stepNumber: 1
+        })
+    };
+
     onChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value
         })
     };
 
-    getCountries = (items) => {
-      return items.map(item => {
-          return <option key={item.id} value={item.name}>{item.name}</option>
-      })
+    getCountries = (countries) => {
+        return countries.map(item => {
+            return <option key={item.id} id={item.id} value={item.id}>{item.name}</option>
+        });
     };
 
-    getCities = (items) => {
-        console.log(items);
+    onChangeCountry = (e) => {
+        const id = e.target.value;
+        this.setState(() => ({
+                countryId: id
+            }),
+            () => {this.getCities(cities)}
+        )
+    };
+
+    getCities = (cities) => {
+        const newCities=[];
+        for (let key in cities) {
+            if(cities[key].country === Number(this.state.countryId)) {
+                newCities.push({
+                    id: key,
+                    name: cities[key].name
+                });
+            }
+        }
+        this.setState({cities: newCities});
+    };
+
+    onChangeFile = (e) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(e.target.files[0]);
+        reader.onload = (e) => {
+            this.setState({
+                avatar: e.target.result
+            });
+        };
+        console.log(this.state.avatar)
     };
 
     render() {
@@ -179,14 +234,15 @@ export default class App extends React.Component {
                                 id="country"
                                 className="form-control"
                                 name="country"
-                                value={this.state.country}
-                                onChange={this.onChange}
+                                value={this.state.countryId}
+                                onChange={this.onChangeCountry}
                             >
                                 <option value="">Select country</option>
                                 {this.getCountries(countries)}
                             </select>
+                            {this.state.errors.countryId ? <div className="invalid-feedback">{this.state.errors.countryId}</div> : null}
                         </div>
-                        <div className="form-group">
+                        {this.state.countryId && <div className="form-group">
                             <label htmlFor="country">City</label>
                             <select
                                 id="city"
@@ -196,11 +252,30 @@ export default class App extends React.Component {
                                 onChange={this.onChange}
                             >
                                 <option value="">Select city</option>
-                                {this.getCities(cities)}
+                                {this.state.cities.map(item => {
+                                    return <option key={item.id} value={item.name}>{item.name}</option>
+                                })}
                             </select>
-                        </div>
+                            {this.state.errors.city ? <div className="invalid-feedback">{this.state.errors.city}</div> : null}
+                        </div>}
                     </>}
-                    {this.state.stepNumber === 3 && <div>Step 3</div>}
+                    {this.state.stepNumber === 3 &&
+                        <div className="form-group">
+                            <img
+                                className="avatar"
+                                src={this.state.avatar ? this.state.avatar : 'https://vyshnevyi-partners.com/wp-content/uploads/2016/12/no-avatar-300x300.png'}
+                                alt="Avatar"/>
+                            <label htmlFor="avatar">Onload your photo</label>
+                            <input
+                                type="file"
+                                className="form-control-file"
+                                id="avatar"
+                                name='avatar'
+                                onChange={this.onChangeFile}
+                            />
+                            {this.state.errors.avatar ? <div className="invalid-feedback">{this.state.errors.avatar}</div> : null}
+                        </div>
+                    }
                     {this.state.stepNumber < 4 &&
                     <div className='d-flex justify-content-center'>
                         <button
@@ -217,7 +292,31 @@ export default class App extends React.Component {
                         >Next
                         </button>
                     </div>}
-                    {this.state.stepNumber === 4 && <div>Step 4</div>}
+                    {this.state.stepNumber === 4 &&
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-4">
+                                    <img className="avatar" src={this.state.avatar} alt="Avatar"/>
+                                </div>
+                                <div className="col-8 d-flex align-items-center"><h3>{this.state.firstName} {this.state.lastName}</h3></div>
+                            </div>
+                            <div className="row">
+                                <div className="col-12">
+                                    <p><strong>Email: </strong>{this.state.email}</p>
+                                    <p><strong>Mobile: </strong>{this.state.mobile}</p>
+                                    <p><strong>Location: </strong>{this.state.countryId}, {this.state.city}</p>
+                                    <div className="d-flex justify-content-center">
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-secondary col-4"
+                                            onClick={this.onReset}
+                                        >Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </form>
             </div>
         );

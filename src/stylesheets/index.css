@@ -27,3 +27,9 @@ body {
   color: black;
   cursor: pointer;
 }
+
+.avatar {
+  display: block;
+  max-width: 100%;
+  margin: 0 auto 20px;
+}
