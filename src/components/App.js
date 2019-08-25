@@ -6,6 +6,7 @@ import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
 import Step4 from './Step4';
+import Buttons from './Buttons';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -172,21 +173,12 @@ export default class App extends React.Component {
                     />
                     }
                     {this.state.stepNumber < 4 &&
-                    <div className='d-flex justify-content-center'>
-                        <button
-                            type="button"
-                            className="btn btn-outline-secondary col-4 mr-3"
-                            disabled={this.state.stepNumber === 1}
-                            onClick={this.onComeBack}
-                        >Previous
-                        </button>
-                        <button
-                            type="submit"
-                            className="btn btn-outline-secondary col-4"
-                            onClick={this.onValidate}
-                        >Next
-                        </button>
-                    </div>}
+                    <Buttons
+                        stepNumber={this.state.stepNumber}
+                        onComeBack={this.onComeBack}
+                        onValidate={this.onValidate}
+                    />
+                    }
                     {this.state.stepNumber === 4 &&
                     <Step4
                         avatar={this.state.avatar}
