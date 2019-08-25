@@ -1,13 +1,13 @@
 import React from "react";
-import Field from './Field';
 import {steps} from '../data/steps';
 import countries from '../data/countries';
-import cities from '../data/cities';
+import cities from "../data/cities";
 import Step1 from './Step1';
+import Step2 from './Step2';
 
 export default class App extends React.Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.state = {
             firstName: '',
@@ -22,7 +22,7 @@ export default class App extends React.Component {
             avatar: '',
             errors: {},
             stepNumber: 1
-        }
+        };
     }
 
     onValidate = (e) => {
@@ -146,56 +146,22 @@ export default class App extends React.Component {
                        errorsPassword={this.state.errors.password}
                        errorsRepeatPassword={this.state.errors.repeatPassword}
                     />}
-                    {this.state.stepNumber === 2 && <>
-                        <Field
-                            id="email"
-                            label="E-mail"
-                            type="text"
-                            name="email"
-                            value={this.state.email}
-                            placeholder="Enter e-mail"
-                            onChange={this.onChange}
-                            error={this.state.errors.email}
-                        />
-                        <Field
-                            id="mobile"
-                            label="Mobile"
-                            type="text"
-                            name="mobile"
-                            value={this.state.mobile}
-                            placeholder="Enter mobile"
-                            onChange={this.onChange}
-                            error={this.state.errors.mobile}
-                        />
-                        <div className="form-group">
-                            <label htmlFor="country">Country</label>
-                            <select
-                                id="country"
-                                className="form-control"
-                                name="country"
-                                value={this.state.countryId}
-                                onChange={this.onChangeCountry}
-                            >
-                                <option value="">Select country</option>
-                                {this.getCountries(countries)}
-                            </select>
-                            {this.state.errors.countryId ? <div className="invalid-feedback">{this.state.errors.countryId}</div> : null}
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="country">City</label>
-                            <select
-                                id="city"
-                                className="form-control"
-                                name="city"
-                                value={this.state.city}
-                                onChange={this.onChange}
-                            >
-                                <option value="">Select city</option>
-                                {this.getCities(cities)}
-                            </select>
-                            {this.state.errors.city ? <div className="invalid-feedback">{this.state.errors.city}</div> : null}
-                        </div>
-                    </>}
+                    {this.state.stepNumber === 2 &&
+                    <Step2
+                        email={this.state.email}
+                        mobile={this.state.mobile}
+                        countryId={this.state.countryId}
+                        city={this.state.city}
+                        onChange={this.onChange}
+                        getCountries={this.getCountries(countries)}
+                        onChangeCountry={this.onChangeCountry}
+                        getCities={this.getCities(cities)}
+                        errorsEmail={this.state.errors.email}
+                        errorsMobile={this.state.errors.mobile}
+                        errorsCountryId={this.state.errors.countryId}
+                        errorsCity={this.state.errors.city}
+                    />
+                    }
                     {this.state.stepNumber === 3 &&
                         <div className="form-group">
                             <img
