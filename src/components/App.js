@@ -1,5 +1,5 @@
 import React from "react";
-import {steps} from '../data/steps';
+import Steps from './Steps';
 import Basic from './Basic';
 import Contacts from './Contacts';
 import Avatar from './Avatar';
@@ -134,20 +134,10 @@ export default class App extends React.Component {
         return (
             <div className="form-container card">
                 <form className="form card-body">
-                    <div className="steps d-flex justify-content-between">
-                        {steps.map(item => (
-                            <div
-                                key={item.id}
-                                className={'steps-item' + (this.state.step === item.id ? ' active' : '') + (this.state.step > item.id ? ' complete' : '')}
-                                onClick={() =>
-                                    this.state.step > item.id ?
-                                        this.setState({step: item.id}) : ''}
-                            >
-                                <span>{item.id}</span>
-                                <p>{item.name}</p>
-                            </div>
-                        ))}
-                    </div>
+                    <Steps
+                        step={this.state.step}
+                        onChange={this.onChange}
+                    />
                     {step === 1 &&
                     <Basic
                         firstname={firstName}
