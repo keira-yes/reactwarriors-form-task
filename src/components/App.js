@@ -1,12 +1,10 @@
 import React from "react";
 import {steps} from '../data/steps';
-import countries from '../data/countries';
-import cities from "../data/cities";
-import Step1 from './Step1';
-import Step2 from './Step2';
-import Step3 from './Step3';
-import Step4 from './Step4';
-import Buttons from './Buttons';
+import Basic from './Basic';
+import Contacts from './Contacts';
+import Avatar from './Avatar';
+import Output from './Output';
+import ButtonsNavigation from './ButtonsNavigation';
 
 export default class App extends React.Component {
     constructor(props) {
@@ -20,60 +18,95 @@ export default class App extends React.Component {
             gender: 'Male',
             email: '',
             mobile: '',
-            countryId: 1,
+            country: 1,
             city: '',
             avatar: '',
-            errors: {},
-            stepNumber: 1
+            step: 1,
+            errors: {
+                firstName: '',
+                lastName: '',
+                password: '',
+                repeatPassword: '',
+                email: '',
+                mobile: '',
+                country: '',
+                city: '',
+                avatar: ''
+            }
         };
     }
 
-    onValidate = (e) => {
-        e.preventDefault();
+    validateFields = () => {
+        const {
+            step,
+            firstName,
+            lastName,
+            password,
+            repeatPassword,
+            email,
+            mobile,
+            country,
+            city,
+            avatar
+        } = this.state;
+
         const errors = {};
 
-        if(this.state.stepNumber === 1) {
-            if (this.state.firstName.length < 5) errors.firstName = "Must be 5 characters or more";
-            if(this.state.lastName.length < 5) errors.lastName = "Must be 5 characters or more";
-            if(this.state.password.length < 6) errors.password = "Must be 6 characters or more";
-            if(this.state.repeatPassword !== this.state.password) errors.repeatPassword = "Must be equal password";
+        if(step === 1) {
+            if (firstName.length < 5) errors.firstName = "Must be 5 characters or more";
+            if(lastName.length < 5) errors.lastName = "Must be 5 characters or more";
+            if(password.length < 6) errors.password = "Must be 6 characters or more";
+            if(repeatPassword !== password) errors.repeatPassword = "Must be equal password";
         }
-        if(this.state.stepNumber === 2) {
-            if (!this.state.email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) errors.email = "Invalid email address";
-            if (!this.state.mobile.match(/^\+(?:[0-9-] ?){6,14}[0-9]$/)) errors.mobile = "Your number doesn't match +3801111111";
-            if (!this.state.countryId) errors.countryId = "This field is required";
-            if (this.state.countryId && this.state.city.length < 1) errors.city = "This field is required";
+        if(step === 2) {
+            if (!email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) errors.email = "Invalid email address";
+            if (!mobile.match(/^\+(?:[0-9-] ?){6,14}[0-9]$/)) errors.mobile = "Your number doesn't match +3801111111";
+            if (!country) errors.country = "This field is required";
+            if (country && city.length < 1) errors.city = "This field is required";
         }
 
-        if(this.state.stepNumber === 3) {
-            if (!this.state.avatar) errors.avatar = "This field is required";
+        if(step === 3) {
+            if (!avatar) errors.avatar = "This field is required";
         }
+
+        return errors;
+    };
+
+    onSubmit = (e) => {
+        e.preventDefault();
+
+        const errors = this.validateFields();
 
         if (Object.keys(errors).length > 0) {
             this.setState({errors});
         } else {
             this.setState({
                 errors: {},
-                stepNumber: this.state.stepNumber + 1
+                step: this.state.step + 1
             });
         }
 
     };
 
-    onComeBack = () => {
+    onPrevious = () => {
         this.setState({
-            stepNumber: this.state.stepNumber - 1
+            step: this.state.step - 1
         });
     };
 
     onReset = () => {
-        Object.keys(this.state).map(item => {
-            return this.setState({[item]: ''})
-        });
-
         this.setState({
+            firstName: '',
+            lastName: '',
+            password: '',
+            repeatPassword: '',
             gender: 'Male',
-            stepNumber: 1
+            email: '',
+            mobile: '',
+            country: 1,
+            city: '',
+            avatar: '',
+            step: 1
         })
     };
 
@@ -83,42 +116,21 @@ export default class App extends React.Component {
         })
     };
 
-    getCountries = (countries) => {
-        return countries.map(item => {
-            return <option key={item.id} value={item.id}>{item.name}</option>
-        });
-    };
-
-    onChangeCountry = (e) => {
-        const id = e.target.value;
-        this.setState({
-            countryId: id,
-            city: ''
-        })
-    };
-
-    getCities = (cities) => {
-        const newCities = [];
-        for (let key in cities) {
-            if(cities[key].country === Number(this.state.countryId)) {
-                newCities.push(<option key={key} value={cities[key].name}>{cities[key].name}</option>)
-            }
-        }
-        return newCities.map(item => {return item})
-    };
-
-    onChangeFile = (e) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(e.target.files[0]);
-        reader.onload = (e) => {
-            this.setState({
-                avatar: e.target.result
-            });
-        };
-        console.log(this.state.avatar)
-    };
-
     render() {
+        const {
+            step,
+            firstName,
+            lastName,
+            password,
+            repeatPassword,
+            gender,
+            email,
+            mobile,
+            country,
+            city,
+            avatar,
+            errors
+        } = this.state;
         return (
             <div className="form-container card">
                 <form className="form card-body">
@@ -126,68 +138,59 @@ export default class App extends React.Component {
                         {steps.map(item => (
                             <div
                                 key={item.id}
-                                className={'steps-item' + (this.state.stepNumber === item.id ? ' active' : '') + (this.state.stepNumber > item.id ? ' complete' : '')}
+                                className={'steps-item' + (this.state.step === item.id ? ' active' : '') + (this.state.step > item.id ? ' complete' : '')}
                                 onClick={() =>
-                                    this.state.stepNumber > item.id ?
-                                        this.setState({stepNumber: item.id}) : ''}
+                                    this.state.step > item.id ?
+                                        this.setState({step: item.id}) : ''}
                             >
                                 <span>{item.id}</span>
                                 <p>{item.name}</p>
                             </div>
                         ))}
                     </div>
-                    {this.state.stepNumber === 1 &&
-                    <Step1
-                        firstname={this.state.firstName}
-                        lastName={this.state.lastName}
-                        password={this.state.password}
-                        repeatPassword={this.state.repeatPassword}
-                        gender={this.state.gender}
+                    {step === 1 &&
+                    <Basic
+                        firstname={firstName}
+                        lastName={lastName}
+                        password={password}
+                        repeatPassword={repeatPassword}
+                        gender={gender}
                         onChange={this.onChange}
-                        errorsFirstName={this.state.errors.firstName}
-                        errorsLastName={this.state.errors.lastName}
-                        errorsPassword={this.state.errors.password}
-                        errorsRepeatPassword={this.state.errors.repeatPassword}
+                        errors={errors}
                     />}
-                    {this.state.stepNumber === 2 &&
-                    <Step2
-                        email={this.state.email}
-                        mobile={this.state.mobile}
-                        countryId={this.state.countryId}
-                        city={this.state.city}
+                    {step === 2 &&
+                    <Contacts
+                        email={email}
+                        mobile={mobile}
+                        country={country}
+                        city={city}
                         onChange={this.onChange}
-                        getCountries={this.getCountries(countries)}
-                        onChangeCountry={this.onChangeCountry}
-                        getCities={this.getCities(cities)}
-                        errorsEmail={this.state.errors.email}
-                        errorsMobile={this.state.errors.mobile}
-                        errorsCountryId={this.state.errors.countryId}
-                        errorsCity={this.state.errors.city}
+                        errors={errors}
                     />
                     }
-                    {this.state.stepNumber === 3 &&
-                    <Step3
-                        avatar={this.state.avatar}
-                        onChangeFile={this.onChangeFile}
-                        errorsAvatar={this.state.errors.avatar}
+                    {step === 3 &&
+                    <Avatar
+                        avatar={avatar}
+                        onChange={this.onChange}
+                        errors={errors}
                     />
                     }
-                    {this.state.stepNumber < 4 &&
-                    <Buttons
-                        stepNumber={this.state.stepNumber}
-                        onComeBack={this.onComeBack}
-                        onValidate={this.onValidate}
+                    {step < 4 &&
+                    <ButtonsNavigation
+                        step={step}
+                        onPrevious={this.onPrevious}
+                        onNext={this.onSubmit}
                     />
                     }
-                    {this.state.stepNumber === 4 &&
-                    <Step4
-                        avatar={this.state.avatar}
-                        firstName={this.state.firstName}
-                        lastName={this.state.lastName}
-                        email={this.state.email}
-                        mobile={this.state.mobile}
-                        countryId={this.state.countryId}
-                        city={this.state.city}
+                    {step === 4 &&
+                    <Output
+                        avatar={avatar}
+                        firstName={firstName}
+                        lastName={lastName}
+                        email={email}
+                        mobile={mobile}
+                        country={country}
+                        city={city}
                         onReset={this.onReset}
                     />
                     }
