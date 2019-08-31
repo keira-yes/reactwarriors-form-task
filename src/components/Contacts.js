@@ -5,7 +5,7 @@ import cities from "../data/cities";
 
 export default class Contacts extends React.Component {
 
-    getCities = (cities) => {
+    getCities = () => {
         const newCities = [];
         for (let key in cities) {
             if(cities[key].country === Number(this.props.country)) {
@@ -16,6 +16,7 @@ export default class Contacts extends React.Component {
             return <option key={index} value={item.name}>{item.name}</option>
         })
     };
+
     render() {
 
         const {
@@ -75,7 +76,7 @@ export default class Contacts extends React.Component {
                         onChange={onChange}
                     >
                         <option value="">Select city</option>
-                        {this.getCities(cities)}
+                        {this.getCities()}
                     </select>
                     {errors.city ? <div className="invalid-feedback">{errors.city}</div> : null}
                 </div>
