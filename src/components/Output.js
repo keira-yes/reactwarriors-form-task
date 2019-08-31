@@ -29,9 +29,7 @@ export default class Output extends React.Component {
                         <p><strong>Email: </strong>{email}</p>
                         <p><strong>Mobile: </strong>{mobile}</p>
                         <p><strong>Location: </strong>
-                            {countries.map(item => {
-                                return (item.id === Number(country) ? item.name : '')
-                            })},
+                            {countries.find(item => item.id === Number(country)).name},
                             {city}
                         </p>
                         <div className="d-flex justify-content-center">
